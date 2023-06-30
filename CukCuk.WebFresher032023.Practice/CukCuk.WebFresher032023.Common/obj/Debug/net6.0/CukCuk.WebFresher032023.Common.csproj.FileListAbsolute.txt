@@ -1,0 +1,14 @@
+D:\Work\Misa\GĐ2\CukCuk\Product\BackEnd\CukCuk.WebFresher032023.Practice\CukCuk.WebFresher032023.Common\bin\Debug\net6.0\CukCuk.WebFresher032023.Common.deps.json
+D:\Work\Misa\GĐ2\CukCuk\Product\BackEnd\CukCuk.WebFresher032023.Practice\CukCuk.WebFresher032023.Common\bin\Debug\net6.0\CukCuk.WebFresher032023.Common.dll
+D:\Work\Misa\GĐ2\CukCuk\Product\BackEnd\CukCuk.WebFresher032023.Practice\CukCuk.WebFresher032023.Common\bin\Debug\net6.0\CukCuk.WebFresher032023.Common.pdb
+D:\Work\Misa\GĐ2\CukCuk\Product\BackEnd\CukCuk.WebFresher032023.Practice\CukCuk.WebFresher032023.Common\obj\Debug\net6.0\CukCuk.WebFresher032023.Common.csproj.AssemblyReference.cache
+D:\Work\Misa\GĐ2\CukCuk\Product\BackEnd\CukCuk.WebFresher032023.Practice\CukCuk.WebFresher032023.Common\obj\Debug\net6.0\CukCuk.WebFresher032023.Common.Resources.ResourceVN.resources
+D:\Work\Misa\GĐ2\CukCuk\Product\BackEnd\CukCuk.WebFresher032023.Practice\CukCuk.WebFresher032023.Common\obj\Debug\net6.0\CukCuk.WebFresher032023.Common.csproj.GenerateResource.cache
+D:\Work\Misa\GĐ2\CukCuk\Product\BackEnd\CukCuk.WebFresher032023.Practice\CukCuk.WebFresher032023.Common\obj\Debug\net6.0\CukCuk.WebFresher032023.Common.GeneratedMSBuildEditorConfig.editorconfig
+D:\Work\Misa\GĐ2\CukCuk\Product\BackEnd\CukCuk.WebFresher032023.Practice\CukCuk.WebFresher032023.Common\obj\Debug\net6.0\CukCuk.WebFresher032023.Common.AssemblyInfoInputs.cache
+D:\Work\Misa\GĐ2\CukCuk\Product\BackEnd\CukCuk.WebFresher032023.Practice\CukCuk.WebFresher032023.Common\obj\Debug\net6.0\CukCuk.WebFresher032023.Common.AssemblyInfo.cs
+D:\Work\Misa\GĐ2\CukCuk\Product\BackEnd\CukCuk.WebFresher032023.Practice\CukCuk.WebFresher032023.Common\obj\Debug\net6.0\CukCuk.WebFresher032023.Common.csproj.CoreCompileInputs.cache
+D:\Work\Misa\GĐ2\CukCuk\Product\BackEnd\CukCuk.WebFresher032023.Practice\CukCuk.WebFresher032023.Common\obj\Debug\net6.0\CukCuk.WebFresher032023.Common.dll
+D:\Work\Misa\GĐ2\CukCuk\Product\BackEnd\CukCuk.WebFresher032023.Practice\CukCuk.WebFresher032023.Common\obj\Debug\net6.0\refint\CukCuk.WebFresher032023.Common.dll
+D:\Work\Misa\GĐ2\CukCuk\Product\BackEnd\CukCuk.WebFresher032023.Practice\CukCuk.WebFresher032023.Common\obj\Debug\net6.0\CukCuk.WebFresher032023.Common.pdb
+D:\Work\Misa\GĐ2\CukCuk\Product\BackEnd\CukCuk.WebFresher032023.Practice\CukCuk.WebFresher032023.Common\obj\Debug\net6.0\ref\CukCuk.WebFresher032023.Common.dll

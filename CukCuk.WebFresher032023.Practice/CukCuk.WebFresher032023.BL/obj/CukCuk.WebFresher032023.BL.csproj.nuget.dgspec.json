@@ -1,0 +1,144 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\Work\\Misa\\GĐ2\\CukCuk\\Product\\BackEnd\\CukCuk.WebFresher032023.Practice\\CukCuk.WebFresher032023.BL\\CukCuk.WebFresher032023.BL.csproj": {}
+  },
+  "projects": {
+    "D:\\Work\\Misa\\GĐ2\\CukCuk\\Product\\BackEnd\\CukCuk.WebFresher032023.Practice\\CukCuk.WebFresher032023.BL\\CukCuk.WebFresher032023.BL.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Work\\Misa\\GĐ2\\CukCuk\\Product\\BackEnd\\CukCuk.WebFresher032023.Practice\\CukCuk.WebFresher032023.BL\\CukCuk.WebFresher032023.BL.csproj",
+        "projectName": "CukCuk.WebFresher032023.BL",
+        "projectPath": "D:\\Work\\Misa\\GĐ2\\CukCuk\\Product\\BackEnd\\CukCuk.WebFresher032023.Practice\\CukCuk.WebFresher032023.BL\\CukCuk.WebFresher032023.BL.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "D:\\Work\\Misa\\GĐ2\\CukCuk\\Product\\BackEnd\\CukCuk.WebFresher032023.Practice\\CukCuk.WebFresher032023.BL\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "D:\\Work\\Misa\\GĐ2\\CukCuk\\Product\\BackEnd\\CukCuk.WebFresher032023.Practice\\CukCuk.WebFresher032023.DL\\CukCuk.WebFresher032023.DL.csproj": {
+                "projectPath": "D:\\Work\\Misa\\GĐ2\\CukCuk\\Product\\BackEnd\\CukCuk.WebFresher032023.Practice\\CukCuk.WebFresher032023.DL\\CukCuk.WebFresher032023.DL.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[12.0.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.300\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\Work\\Misa\\GĐ2\\CukCuk\\Product\\BackEnd\\CukCuk.WebFresher032023.Practice\\CukCuk.WebFresher032023.DL\\CukCuk.WebFresher032023.DL.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Work\\Misa\\GĐ2\\CukCuk\\Product\\BackEnd\\CukCuk.WebFresher032023.Practice\\CukCuk.WebFresher032023.DL\\CukCuk.WebFresher032023.DL.csproj",
+        "projectName": "CukCuk.WebFresher032023.DL",
+        "projectPath": "D:\\Work\\Misa\\GĐ2\\CukCuk\\Product\\BackEnd\\CukCuk.WebFresher032023.Practice\\CukCuk.WebFresher032023.DL\\CukCuk.WebFresher032023.DL.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "D:\\Work\\Misa\\GĐ2\\CukCuk\\Product\\BackEnd\\CukCuk.WebFresher032023.Practice\\CukCuk.WebFresher032023.DL\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Dapper": {
+              "target": "Package",
+              "version": "[2.0.143, )"
+            },
+            "Microsoft.Extensions.Configuration.Abstractions": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            },
+            "MySql.Data": {
+              "target": "Package",
+              "version": "[8.0.33, )"
+            },
+            "MySqlConnector": {
+              "target": "Package",
+              "version": "[2.2.6, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.300\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
