@@ -63,3 +63,6 @@ D:\Work\Misa\GĐ2\CukCuk\Product\BackEnd\CukCuk.WebFresher032023.Practice\CukCuk
 D:\Work\Misa\GĐ2\CukCuk\Product\BackEnd\CukCuk.WebFresher032023.Practice\CukCuk.WebFresher032023.Practice\bin\Debug\net6.0\CukCuk.WebFresher032023.DL.pdb
 D:\Work\Misa\GĐ2\CukCuk\Product\BackEnd\CukCuk.WebFresher032023.Practice\CukCuk.WebFresher032023.Practice\bin\Debug\net6.0\CukCuk.WebFresher032023.Common.dll
 D:\Work\Misa\GĐ2\CukCuk\Product\BackEnd\CukCuk.WebFresher032023.Practice\CukCuk.WebFresher032023.Practice\bin\Debug\net6.0\CukCuk.WebFresher032023.Common.pdb
+D:\Work\Misa\GĐ2\CukCuk\Product\BackEnd\CukCuk.WebFresher032023.Practice\CukCuk.WebFresher032023.Practice\bin\Debug\net6.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\Work\Misa\GĐ2\CukCuk\Product\BackEnd\CukCuk.WebFresher032023.Practice\CukCuk.WebFresher032023.Practice\bin\Debug\net6.0\Microsoft.Extensions.FileProviders.Abstractions.dll
+D:\Work\Misa\GĐ2\CukCuk\Product\BackEnd\CukCuk.WebFresher032023.Practice\CukCuk.WebFresher032023.Practice\bin\Debug\net6.0\Microsoft.Extensions.Hosting.Abstractions.dll

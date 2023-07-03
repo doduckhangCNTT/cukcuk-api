@@ -10,5 +10,6 @@ namespace CukCuk.WebFresher032023.DL.Repository.FoodServiceHobbes
 {
     public interface IFoodServiceHobbyRepository : IBaseRepository<FoodServiceHobby>
     {
+        Task<int> CreateFoodServiceHobby(string foodId, string serviceHobbyIds);
     }
 }

@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -73,6 +76,12 @@ namespace CukCuk.WebFresher032023.DL.Entity
         public int? StopSelling { get; set; }
 
         /// <summary>
+        /// - Trạng thái hiển thị món ăn trên thực đơn
+        /// Created By: DDKhang (25/6/2023)
+        /// </summary>
+        public int? ShowOnMenu { get; set; }
+
+        /// <summary>
         /// - Mã đơn vị món ăn
         /// </summary>
         /// Created By: DDKhang (25/6/2023)
@@ -119,6 +128,12 @@ namespace CukCuk.WebFresher032023.DL.Entity
         /// </summary>
         /// Created By: DDKhang (25/6/2023)
         public virtual List<ServiceHobby>? ServiceHobbes { get; set; }
+
+        /// <summary>
+        /// - Danh sách các sở thích dịch vụ
+        /// </summary>
         public virtual List<FoodServiceHobby>? FoodServiceHobby { get; set; }
+
+        public IFormFile? ImageFile { get; set; } = null;
     }
 }

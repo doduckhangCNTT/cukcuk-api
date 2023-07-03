@@ -12,5 +12,6 @@ namespace CukCuk.WebFresher032023.BL.Service.FoodServiceHobbes
     public interface IFoodServiceHobbyService : IBaseService<FoodServiceHobbyDto, FoodServiceHobbyUpdateDto, FoodServiceHobbyCreateDto>
     {
         Task<List<FoodServiceHobby>> GetFoodServiceHobby(string foodId);
+        Task<int> DeleteFoodServiceHobby(string foodId);
     }
 }

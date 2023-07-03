@@ -24,13 +24,25 @@ namespace CukCuk.WebFresher032023.Practice.Controllers
         }
         #endregion
 
+        /// <summary>
+        /// - Lấy thông tin thực thể theo id
+        /// </summary>
+        /// <param name="ids">Danh sách id</param>
+        /// <returns>List<TEntityDto>></returns>
+        /// CreatedBy: DDKhang (27/6/2023)
         [HttpPost("Ids")]
-        public virtual async Task<ActionResult<List<TEntityDto>>> GetAsync(string ids)
+        public virtual async Task<ActionResult<List<TEntityDto>>> GetAsync([FromBody]EntityGet entityGet)
         {
-            List<TEntityDto> foods = await _baseService.GetAsync(ids);
+            List<TEntityDto> foods = await _baseService.GetAsync(entityGet.Ids);
             return Ok(foods);
         }
 
+        /// <summary>
+        /// - Lọc thông tin các thực thể
+        /// </summary>
+        /// <param name="entityFilter">Thông tin thực thể muốn lọc</param>
+        /// <returns>ActionResult<FilterEntity<TEntityDto>></returns>
+        /// CreatedBy: DDKhang (27/6/2023)
         [HttpPost("filter")]
         public virtual async Task<ActionResult<FilterEntity<TEntityDto>>> EntitysFilter(EntityFilter entityFilter)
         {
@@ -38,20 +50,38 @@ namespace CukCuk.WebFresher032023.Practice.Controllers
             return Ok(entityFilterDto);
         }
 
+        /// <summary>
+        /// - Thực hiện thêm thông tin thực thể
+        /// </summary>
+        /// <param name="entityCreateDto">Thông tin thực thể muốn thêm</param>
+        /// <returns>Số bản ghi đã thêm</returns>
+        /// CreatedBy: DDKhang (27/6/2023)
         [HttpPost()]
-        public virtual async Task<ActionResult<int>> CreateAsync(TEntityCreateDto entityCreateDto)
+        public virtual async Task<ActionResult<int>> CreateAsync([FromForm]TEntityCreateDto entityCreateDto)
         {
             int qualityRecordsCreate = await _baseService.CreateAsync(entityCreateDto);
             return Ok(1);
         }
 
+        /// <summary>
+        /// - Thực hiện cập nhật thông tin thực thể
+        /// </summary>
+        /// <param name="entityUpdateDto">Thông tin thực thể muốn cập nhật</param>
+        /// <returns>Số lượng thực thể đã cập nhật</returns>
+        /// CreatedBy: DDKhang (27/6/2023)
         [HttpPut]
-        public virtual async Task<ActionResult<int>> UpdateAsync(TEntityUpdateDto entityUpdateDto)
+        public virtual async Task<ActionResult<int>> UpdateAsync([FromForm]TEntityUpdateDto entityUpdateDto)
         {
             int qualityRecordsUpdate = await _baseService.UpdateAsync(entityUpdateDto);
             return Ok(qualityRecordsUpdate);
         }
 
+        /// <summary>
+        /// - Thực hiện xóa thông tin theo entityId
+        /// </summary>
+        /// <param name="entityId"></param>
+        /// <returns>Số bản ghi đã xóa</returns>
+        /// CreatedBy: DDKhang (27/6/2023)
         [HttpDelete("{entityId}")]
         public virtual async Task<ActionResult<int>> DeleteAsync(Guid entityId)
         {

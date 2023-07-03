@@ -1,4 +1,5 @@
 ﻿using CukCuk.WebFresher032023.DL.Entity;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -74,6 +75,12 @@ namespace CukCuk.WebFresher032023.BL.DTO.Foods
         public int? StopSelling { get; set; }
 
         /// <summary>
+        /// - Trạng thái hiển thị món ăn trên thực đơn
+        /// Created By: DDKhang (25/6/2023)
+        /// </summary>
+        public int? ShowOnMenu { get; set; }
+
+        /// <summary>
         /// - Mã đơn vị món ăn
         /// </summary>
         /// Created By: DDKhang (25/6/2023)
@@ -98,5 +105,6 @@ namespace CukCuk.WebFresher032023.BL.DTO.Foods
         public Guid? FoodProcessingPlaceId { get; set; }
 
         public virtual List<ServiceHobby>? ServiceHobbes { get; set; }
+        public IFormFile? ImageFile { get; set; }
     }
 }

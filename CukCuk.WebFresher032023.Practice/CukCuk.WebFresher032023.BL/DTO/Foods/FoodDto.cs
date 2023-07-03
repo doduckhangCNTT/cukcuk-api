@@ -70,6 +70,12 @@ namespace CukCuk.WebFresher032023.BL.DTO.Foods
         public int? StopSelling { get; set; }
 
         /// <summary>
+        /// - Trạng thái hiển thị món ăn trên thực đơn
+        /// Created By: DDKhang (25/6/2023)
+        /// </summary>
+        public int? ShowOnMenu { get; set; }
+
+        /// <summary>
         /// - Mã đơn vị món ăn
         /// </summary>
         /// Created By: DDKhang (25/6/2023)
@@ -93,8 +99,22 @@ namespace CukCuk.WebFresher032023.BL.DTO.Foods
         /// Created By: DDKhang (25/6/2023)
         public Guid? FoodProcessingPlaceId { get; set; }
 
+        /// <summary>
+        /// - Tên nhóm thực đơn
+        /// Created By: DDKhang (25/6/2023)
+        /// </summary>
         public string? MenuGroupName { get; set; }
+
+        /// <summary>
+        /// - Tên đơn vị đồ ăn
+        /// Created By: DDKhang (25/6/2023)
+        /// </summary>
         public string? FoodUnitName { get; set; }
+
+        /// <summary>
+        /// - Tên loại đơn vị đồ ăn
+        /// Created By: DDKhang (25/6/2023)
+        /// </summary>
         public string? TypeFoodName { get; set; }
 
         /// <summary>

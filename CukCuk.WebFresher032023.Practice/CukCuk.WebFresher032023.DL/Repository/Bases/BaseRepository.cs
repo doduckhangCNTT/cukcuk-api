@@ -76,19 +76,32 @@ namespace CukCuk.WebFresher032023.DL.Repository.Bases
         /// <param name="entity">Thông tin của thực thể</param>
         /// <returns>Số bản ghi được thêm</returns>
         /// <exception cref="InternalException"></exception>
-        /// Created By: DDKhang (24/5/2023)
+        /// Created By: DDKhang (24/6/2023)
         public virtual async Task<int> CreateAsync(TEntity entity)
         {
             int qualityAdd = await CreateEntity(entity);
             return qualityAdd;
         }
 
+        /// <summary>
+        /// - Cập nhật thông tin thực thể
+        /// </summary>
+        /// <param name="entity">Thông tin thực thể cập nhật</param>
+        /// <returns>Số bản ghi đã cập nhật</returns>
+        /// Created By: DDKhang (24/6/2023)
         public virtual async Task<int> UpdateAsync(TEntity entity)
         {
             int qualityUpdate = await UpdateEntity(entity);
             return qualityUpdate;
         }
 
+        /// <summary>
+        /// - Thực hiện xóa thông tin thực thể
+        /// </summary>
+        /// <param name="entityId">Mã thực thể muốn xóa</param>
+        /// <returns>Số bản ghi đã xóa</returns>
+        /// <exception cref="Exception"></exception>
+        /// Created By: DDKhang (24/6/2023)
         public virtual async Task<int> DeleteAsync(Guid entityId)
         {
             using (TransactionScope scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
@@ -141,48 +154,16 @@ namespace CukCuk.WebFresher032023.DL.Repository.Bases
         /// CreatedBy: DDKhang (27/6/2023)
         public virtual async Task<int> DeleteMutilEntityAsync(string listEntityId)
         {
-            using (TransactionScope scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-            {
-                try
-                {
-                    // Thực hiện cấu trúc lại chuỗi xóa theo dạng "a,b"
-                    StringBuilder formatString = new StringBuilder();
-                    List<string> listId = listEntityId.Split(',').Select(s => s.Trim()).ToList();
-                    formatString = formatString.Append(string.Join(",", listId));
-                    string formatResult = formatString.ToString();
-
-                    // Lấy tên của entity
-                    string tableName = typeof(TEntity).Name;
-                    // Khởi tạo kết nối với MariaDb
-                    using var sqlConnection = await GetOpenConnectionAsync();
-
-                    // Khởi tạo lệnh sql
-                    string sqlCommandProc = "Proc_Delete" + tableName + "MultiById";
-
-                    MySqlCommand command = new MySqlCommand(sqlCommandProc, (MySqlConnection?)sqlConnection);
-                    command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue($"@m_List{tableName}Id", formatResult.Trim());
-                    // Thực thi proc
-                    int result = await command.ExecuteNonQueryAsync();
-
-                    // Commit Transaction
-                    scope.Complete();
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    //throw new InternalException(ex.Message);
-                    throw new Exception(ex.Message);
-                    // Rollback Transaction
-                    scope.Dispose();
-                }
-                finally
-                {
-
-                }
-            }
+            int qualityDelete = await DeleteMultiEntity(listEntityId);
+            return qualityDelete;
         }
 
+        /// <summary>
+        /// - Thực hiện lọc thông tin thực thể
+        /// </summary>
+        /// <param name="entityFilter">Thông tin thực thể lọc</param>
+        /// <returns>FilterEntity<TEntity></returns>
+        /// Created By: DDKhang (24/6/2023)
         public virtual async Task<FilterEntity<TEntity>> EntityFilterAsync(EntityFilter entityFilter)
         {
             try
@@ -257,7 +238,7 @@ namespace CukCuk.WebFresher032023.DL.Repository.Bases
                     // Khởi tạo đối tượng chung TEntity
                     TEntity entity = Activator.CreateInstance<TEntity>();
                     // Danh sách các thuộc tính không hỗ trợ trong TEntity
-                    List<string> propertyNoSupport = new() { "ServiceHobbes" };
+                    List<string> propertyNoSupport = new() { "ServiceHobbes", "FoodServiceHobby", "ImageFile" };
 
                     // Sử dụng reflection để đặt giá trị cho các thuộc tính của TEntity lấy các thuộc tính của entity
                     PropertyInfo[] properties = typeof(TEntity).GetProperties();
@@ -327,6 +308,12 @@ namespace CukCuk.WebFresher032023.DL.Repository.Bases
 
         }
 
+        /// <summary>
+        /// - Lấy thông tin thực thể theo id
+        /// </summary>
+        /// <param name="ids">Danh sách id</param>
+        /// <returns>List<TEntity></returns>
+        /// Created By: DDKhang (24/6/2023)
         public async Task<List<TEntity>> GetEntityById(string ids)
         {
             try
@@ -366,7 +353,8 @@ namespace CukCuk.WebFresher032023.DL.Repository.Bases
                 // Sử dụng reflection để đặt giá trị cho các thuộc tính của TEntity từ dữ liệu đọc được từ Proc
                 PropertyInfo[] properties = typeof(TEntity).GetProperties();
                 // Danh sách các thuộc tính không hỗ trợ trong TEntity
-                List<string> propertyNoSupport = new() { "ServiceHobbes", "FoodServiceHobby", "MenuGroupName", "FoodUnitName", "TypeFoodName" };
+                //List<string> propertyNoSupport = new() { "ServiceHobbes", "FoodServiceHobby", "MenuGroupName", "FoodUnitName", "TypeFoodName" };
+                List<string> propertyNoSupport = new() { "ServiceHobbes", "FoodServiceHobby", "ImageFile" };
 
                 while (reader.Read())
                 {
@@ -406,6 +394,13 @@ namespace CukCuk.WebFresher032023.DL.Repository.Bases
             }
         }
 
+        /// <summary>
+        /// - Hàm thực thể việc thêm thực thể
+        /// </summary>
+        /// <param name="entity">Thông tin thực thể thêm</param>
+        /// <returns>Số lượng bản ghi đã thêm</returns>
+        /// <exception cref="Exception"></exception>
+        /// Created By: DDKhang (24/6/2023)
         public async Task<int> CreateEntity(TEntity entity)
         {
             using (TransactionScope scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
@@ -472,6 +467,13 @@ namespace CukCuk.WebFresher032023.DL.Repository.Bases
             }
         }
 
+        /// <summary>
+        /// - Hàm cập nhật thông tin thực thể
+        /// </summary>
+        /// <param name="entity">Thông tin thực thể cập nhật</param>
+        /// <returns>Số bản ghi đã cập nhật</returns>
+        /// <exception cref="Exception"></exception>
+        /// Created By: DDKhang (24/6/2023)
         public async Task<int> UpdateEntity(TEntity entity)
         {
             using (TransactionScope scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
@@ -519,6 +521,50 @@ namespace CukCuk.WebFresher032023.DL.Repository.Bases
                     throw new Exception(ex.Message);
                     // Rollback Transaction
                     scope.Dispose();
+                }
+            }
+        }
+
+        public async Task<int> DeleteMultiEntity(string listEntityId)
+        {
+            using (TransactionScope scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                try
+                {
+                    // Thực hiện cấu trúc lại chuỗi xóa theo dạng "a,b"
+                    StringBuilder formatString = new StringBuilder();
+                    List<string> listId = listEntityId.Split(',').Select(s => s.Trim()).ToList();
+                    formatString = formatString.Append(string.Join(",", listId));
+                    string formatResult = formatString.ToString();
+
+                    // Lấy tên của entity
+                    string tableName = typeof(TEntity).Name;
+                    // Khởi tạo kết nối với MariaDb
+                    using var sqlConnection = await GetOpenConnectionAsync();
+
+                    // Khởi tạo lệnh sql
+                    string sqlCommandProc = "Proc_Delete" + tableName + "MultiById";
+
+                    MySqlCommand command = new MySqlCommand(sqlCommandProc, (MySqlConnection?)sqlConnection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue($"@m_List{tableName}Id", formatResult.Trim());
+                    // Thực thi proc
+                    int result = await command.ExecuteNonQueryAsync();
+
+                    // Commit Transaction
+                    scope.Complete();
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    //throw new InternalException(ex.Message);
+                    throw new Exception(ex.Message);
+                    // Rollback Transaction
+                    scope.Dispose();
+                }
+                finally
+                {
+
                 }
             }
         }

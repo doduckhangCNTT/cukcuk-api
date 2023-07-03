@@ -1,13 +1,18 @@
-﻿using CukCuk.WebFresher032023.BL.Service.FoodProcessingPlaces;
+﻿using CukCuk.WebFresher032023.BL.Service.FilesImage;
+using CukCuk.WebFresher032023.BL.Service.FoodProcessingPlaces;
 using CukCuk.WebFresher032023.BL.Service.Foods;
 using CukCuk.WebFresher032023.BL.Service.FoodServiceHobbes;
 using CukCuk.WebFresher032023.BL.Service.FoodUnits;
 using CukCuk.WebFresher032023.BL.Service.MenuGroups;
+using CukCuk.WebFresher032023.BL.Service.ServiceHobbes;
 using CukCuk.WebFresher032023.DL.Repository.FoodProcessingPlaces;
 using CukCuk.WebFresher032023.DL.Repository.Foods;
 using CukCuk.WebFresher032023.DL.Repository.FoodServiceHobbes;
 using CukCuk.WebFresher032023.DL.Repository.FoodUnits;
 using CukCuk.WebFresher032023.DL.Repository.MenuGroups;
+using CukCuk.WebFresher032023.DL.Repository.ServiceHobbes;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting.Internal;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +41,9 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IFoodRepository, FoodRepository>();
 builder.Services.AddScoped<IFoodService, FoodService>();
 
+builder.Services.AddScoped<IServiceHobbyRepository, ServiceHobbyRepository>();
+builder.Services.AddScoped<IServiceHobbyService, ServiceHobbyService>();
+
 builder.Services.AddScoped<IFoodServiceHobbyRepository, FoodServiceHobbyRepository>();
 builder.Services.AddScoped<IFoodServiceHobbyService, FoodServiceHobbyService>();
 
@@ -48,6 +56,10 @@ builder.Services.AddScoped<IFoodUnitService, FoodUnitService>();
 builder.Services.AddScoped<IMenuGroupRepository, MenuGroupRepository>();
 builder.Services.AddScoped<IMenuGroupService, MenuGroupService>();
 
+//builder.Services.AddTransient<IFileService, FileService>();
+//builder.Services.AddTransient<IProductRepository, ProductRepository>();
+
+builder.Services.AddScoped<IFileService, FileService>();
 
 var app = builder.Build();
 
@@ -70,6 +82,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+           Path.Combine(builder.Environment.ContentRootPath, "Uploads")),
+    RequestPath = "/Resources"
+});
 
 app.UseAuthorization();
 

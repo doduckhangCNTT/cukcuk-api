@@ -84,7 +84,7 @@ namespace CukCuk.WebFresher032023.BL.Service.Bases
         /// <param name="entityUpdateDto">Thông tin thực thể muốn cập nhật</param>
         /// <returns>Số bản ghi đã được cập nhật</returns>
         /// - Author: DDKhang (30/6/2023)
-        public async Task<int> UpdateAsync(TEntityUpdateDto entityUpdateDto)
+        public virtual async Task<int> UpdateAsync(TEntityUpdateDto entityUpdateDto)
         {
             var entityUpdate = _mapper.Map<TEntity>(entityUpdateDto);
 

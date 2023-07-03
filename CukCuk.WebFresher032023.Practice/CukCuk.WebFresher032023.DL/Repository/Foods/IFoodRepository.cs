@@ -10,5 +10,6 @@ namespace CukCuk.WebFresher032023.DL.Repository.Foods
 {
     public interface IFoodRepository : IBaseRepository<Food>
     {
+        Task<List<Food>> GetMultiAsync(string ids);
     }
 }

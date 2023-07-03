@@ -10,5 +10,6 @@ namespace CukCuk.WebFresher032023.BL.Service.Foods
 {
     public interface IFoodService : IBaseService<FoodDto, FoodUpdateDto, FoodCreateDto>
     {
+        //Task<int> CreateAsyncFood(FoodDto foodDto);
     }
 }
