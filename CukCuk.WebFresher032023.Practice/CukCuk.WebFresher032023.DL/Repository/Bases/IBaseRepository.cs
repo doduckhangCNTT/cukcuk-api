@@ -61,5 +61,19 @@ namespace CukCuk.WebFresher032023.DL.Repository.Bases
         /// <returns>Số bản ghi được xóa</returns>
         /// CreatedBy: DDKhang (27/6/2023)
         Task<int> DeleteMutilEntityAsync(string listEntityId);
+
+        /// <summary>
+        /// - Tạo mới mã món ăn mới
+        /// </summary>
+        /// <param name="prefixEntity">Tiền tố món ăn</param>
+        /// <returns>Mã code mới</returns>
+        Task<string> NewEntityCode(string prefixEntity);
+
+        /// <summary>
+        /// - Kiểm tra trùng lặp mã
+        /// </summary>
+        /// <param name="entityCode">Mã thực thể</param>
+        /// <returns>Boolean</returns>
+        Task<int> CheckDuplicateCode(string entityCode);
     }
 }

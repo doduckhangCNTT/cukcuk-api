@@ -33,6 +33,16 @@ namespace CukCuk.WebFresher032023.BL.Service.Bases
         #endregion
 
         /// <summary>
+        /// - Tạo mã code mới cho entity
+        /// </summary>
+        /// <returns>String</returns>
+        public virtual async Task<string> NewEntityCode(string prefixEntity)
+        {
+            string newEntityCode = await _baseRepository.NewEntityCode(prefixEntity);
+            return newEntityCode;
+        }
+
+        /// <summary>
         /// - Thực hiện lọc thông tin thực thể theo điều kiện lọc
         /// </summary>
         /// <param name="entityFilter">Thông tin điều kiện lọc</param>
@@ -72,6 +82,8 @@ namespace CukCuk.WebFresher032023.BL.Service.Bases
         /// - Author: DDKhang (30/6/2023)
         public virtual async Task<int> CreateAsync(TEntityCreateDto entityCreateDto)
         {
+            await ValidateCreate(entityCreateDto);
+
             var entityCreate = _mapper.Map<TEntity>(entityCreateDto);
 
             int qualityRecordsCreate = await _baseRepository.CreateAsync(entityCreate);
@@ -113,6 +125,28 @@ namespace CukCuk.WebFresher032023.BL.Service.Bases
         {
             int result = await _baseRepository.DeleteMutilEntityAsync(listEntityId);
             return result;
+        }
+
+        /// <summary>
+        /// - Kiểm tra xác thực dữ liệu trước khi thêm mới
+        /// </summary>
+        /// <param name="entityCreate"></param>
+        /// <returns>Task<bool></returns>
+        /// - Author: DDKhang (10/6/2023)
+        public virtual async Task<bool> ValidateCreate(TEntityCreateDto entityCreate)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// - Kiểm tra xác thực dữ liệu trước khi cập nhật
+        /// </summary>
+        /// <param name="entityCreate"></param>
+        /// <returns>Task<bool></returns>
+        /// - Author: DDKhang (10/6/2023)
+        public virtual async Task<bool> ValidateUpdate(TEntityUpdateDto entityUpdate)
+        {
+            return true;
         }
     }
 }

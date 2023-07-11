@@ -10,3 +10,6 @@ D:\Work\Misa\GĐ2\CukCuk\Product\BackEnd\CukCuk.WebFresher032023.Practice\CukCuk
 D:\Work\Misa\GĐ2\CukCuk\Product\BackEnd\CukCuk.WebFresher032023.Practice\CukCuk.WebFresher032023.DL\obj\Debug\net6.0\refint\CukCuk.WebFresher032023.DL.dll
 D:\Work\Misa\GĐ2\CukCuk\Product\BackEnd\CukCuk.WebFresher032023.Practice\CukCuk.WebFresher032023.DL\obj\Debug\net6.0\CukCuk.WebFresher032023.DL.pdb
 D:\Work\Misa\GĐ2\CukCuk\Product\BackEnd\CukCuk.WebFresher032023.Practice\CukCuk.WebFresher032023.DL\obj\Debug\net6.0\ref\CukCuk.WebFresher032023.DL.dll
+D:\Work\Misa\GĐ2\CukCuk\Product\BackEnd\CukCuk.WebFresher032023.Practice\CukCuk.WebFresher032023.DL\bin\Debug\net6.0\CukCuk.WebFresher032023.Common.dll
+D:\Work\Misa\GĐ2\CukCuk\Product\BackEnd\CukCuk.WebFresher032023.Practice\CukCuk.WebFresher032023.DL\bin\Debug\net6.0\CukCuk.WebFresher032023.Common.pdb
+D:\Work\Misa\GĐ2\CukCuk\Product\BackEnd\CukCuk.WebFresher032023.Practice\CukCuk.WebFresher032023.DL\obj\Debug\net6.0\CukCuk.WebFresher032023.DL.csproj.CopyComplete

@@ -414,8 +414,14 @@
           }
         }
       },
+      "CukCuk.WebFresher032023.Common/1.0.0": {
+        "runtime": {
+          "CukCuk.WebFresher032023.Common.dll": {}
+        }
+      },
       "CukCuk.WebFresher032023.DL/1.0.0": {
         "dependencies": {
+          "CukCuk.WebFresher032023.Common": "1.0.0",
           "Dapper": "2.0.143",
           "Microsoft.AspNetCore.Http.Features": "5.0.17",
           "Microsoft.Extensions.Configuration.Abstractions": "7.0.0",
@@ -713,6 +719,11 @@
       "sha512": "sha512-CeWTdRNfRaSh0pm2gDTJFwVaXfTq6Xwv/sA887iwPTneW7oMtMlpvDIO+U60+3GWTB7Aom6oQwv5VZVUhQRdPQ==",
       "path": "system.windows.extensions/4.7.0",
       "hashPath": "system.windows.extensions.4.7.0.nupkg.sha512"
+    },
+    "CukCuk.WebFresher032023.Common/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     },
     "CukCuk.WebFresher032023.DL/1.0.0": {
       "type": "project",

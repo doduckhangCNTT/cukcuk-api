@@ -22,7 +22,7 @@ namespace CukCuk.WebFresher032023.Common.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class ResourceVN {
+    public class ResourceVN {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace CukCuk.WebFresher032023.Common.Resources {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CukCuk.WebFresher032023.Common.Resources.ResourceVN", typeof(ResourceVN).Assembly);
@@ -51,12 +51,102 @@ namespace CukCuk.WebFresher032023.Common.Resources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Có lỗi xảy ra vui lòng liên hệ MISA để được trợ giúp..
+        /// </summary>
+        public static string Error_Exception {
+            get {
+                return ResourceManager.GetString("Error_Exception", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Xác thực dữ liệu không thành công..
+        /// </summary>
+        public static string Validate_DevMessage {
+            get {
+                return ResourceManager.GetString("Validate_DevMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mã món bị trùng lặp..
+        /// </summary>
+        public static string Validate_DuplicateFoodCode {
+            get {
+                return ResourceManager.GetString("Validate_DuplicateFoodCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mã món ăn bắt buộc nhập..
+        /// </summary>
+        public static string Validate_FoodCodeRequired {
+            get {
+                return ResourceManager.GetString("Validate_FoodCodeRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tên món bắt buộc nhập..
+        /// </summary>
+        public static string Validate_FoodNameRequired {
+            get {
+                return ResourceManager.GetString("Validate_FoodNameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Giá món ăn bắt buộc nhập..
+        /// </summary>
+        public static string Validate_FoodPriceRequired {
+            get {
+                return ResourceManager.GetString("Validate_FoodPriceRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Đơn vị tính bắt buộc nhập..
+        /// </summary>
+        public static string Validate_FoodUnitRequired {
+            get {
+                return ResourceManager.GetString("Validate_FoodUnitRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tên vượt qua độ dài cho phép.
+        /// </summary>
+        public static string Validate_FullNameLengthMax {
+            get {
+                return ResourceManager.GetString("Validate_FullNameLengthMax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Không tìm thấy tài nguyên..
+        /// </summary>
+        public static string Validate_NotFoundAssests {
+            get {
+                return ResourceManager.GetString("Validate_NotFoundAssests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Giá món ăn là số lớn hơn 0..
+        /// </summary>
+        public static string Validate_PricePositive {
+            get {
+                return ResourceManager.GetString("Validate_PricePositive", resourceCulture);
             }
         }
     }

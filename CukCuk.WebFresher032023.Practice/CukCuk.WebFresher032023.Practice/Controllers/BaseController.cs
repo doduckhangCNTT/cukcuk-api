@@ -37,6 +37,13 @@ namespace CukCuk.WebFresher032023.Practice.Controllers
             return Ok(foods);
         }
 
+        [HttpGet("newCode")]
+        public virtual async Task<ActionResult<string>> NewEntityCode(string prefixEntity)
+        {
+            string newEntityCode = await _baseService.NewEntityCode(prefixEntity);
+            return Ok(newEntityCode);
+        }
+
         /// <summary>
         /// - Lọc thông tin các thực thể
         /// </summary>

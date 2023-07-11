@@ -11,6 +11,7 @@ using CukCuk.WebFresher032023.DL.Repository.FoodServiceHobbes;
 using CukCuk.WebFresher032023.DL.Repository.FoodUnits;
 using CukCuk.WebFresher032023.DL.Repository.MenuGroups;
 using CukCuk.WebFresher032023.DL.Repository.ServiceHobbes;
+using CukCuk.WebFresher032023.Practice.Middlewares;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting.Internal;
 
@@ -93,5 +94,7 @@ app.UseStaticFiles(new StaticFileOptions
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.Run();

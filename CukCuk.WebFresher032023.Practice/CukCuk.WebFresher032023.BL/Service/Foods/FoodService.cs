@@ -5,6 +5,8 @@ using CukCuk.WebFresher032023.BL.Service.FilesImage;
 using CukCuk.WebFresher032023.BL.Service.FoodServiceHobbes;
 using CukCuk.WebFresher032023.BL.Service.FoodUnits;
 using CukCuk.WebFresher032023.BL.Service.ServiceHobbes;
+using CukCuk.WebFresher032023.Common.ExceptionsError;
+using CukCuk.WebFresher032023.Common.Resources;
 using CukCuk.WebFresher032023.DL.Entity;
 using CukCuk.WebFresher032023.DL.Model;
 using CukCuk.WebFresher032023.DL.Repository.Bases;
@@ -45,7 +47,7 @@ namespace CukCuk.WebFresher032023.BL.Service.Foods
             _fileService = fileService;
 
 
-    }
+        }
         #endregion
 
         /// <summary>
@@ -56,21 +58,29 @@ namespace CukCuk.WebFresher032023.BL.Service.Foods
         /// - Author: DDKhang (30/6/2023)
         public override async Task<List<FoodDto>> GetAsync(string ids)
         {
-            // Lấy thông tin food theo id
-            List<Food> foods = await _foodRepository.GetAsync(ids);
-            Food food = foods[0];
-            // Lấy danh sách id các sở thích phục vụ thuộc foodId tương ứng
-            List<FoodServiceHobby> foodServiceHobbes = await _foodServiceHobby.GetFoodServiceHobby(ids);
-
-            if (foodServiceHobbes != null)
+            try
             {
-                // Thêm thông tin các dịch vụ sở thích cho food
-                food.FoodServiceHobby = foodServiceHobbes;
+                // Lấy thông tin food theo id
+                List<Food> foods = await _foodRepository.GetAsync(ids);
+                Food food = foods[0];
+                // Lấy danh sách id các sở thích phục vụ thuộc foodId tương ứng
+                List<FoodServiceHobby> foodServiceHobbes = await _foodServiceHobby.GetFoodServiceHobby(ids);
+
+                if (foodServiceHobbes != null)
+                {
+                    // Thêm thông tin các dịch vụ sở thích cho food
+                    food.FoodServiceHobby = foodServiceHobbes;
+                }
+
+                // Ánh xạ các trường -> Dto
+                List<FoodDto> foodsDto = _mapper.Map<List<FoodDto>>(foods);
+                return foodsDto;
+            }
+            catch (Exception ex)
+            {
+                throw new InternalException(ex.Message);
             }
 
-            // Ánh xạ các trường -> Dto
-            List<FoodDto> foodssDto = _mapper.Map<List<FoodDto>>(foods);
-            return foodssDto;
         }
 
         /// <summary>
@@ -81,6 +91,10 @@ namespace CukCuk.WebFresher032023.BL.Service.Foods
         /// - Author: DDKhang (28/6/2023)
         public override async Task<int> CreateAsync(FoodCreateDto foodCreateDto)
         {
+
+            await ValidateCreate(foodCreateDto);
+            List<string> validateErrors = new List<string>();
+
             //using (TransactionScope scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             //{
             try
@@ -94,7 +108,7 @@ namespace CukCuk.WebFresher032023.BL.Service.Foods
                 food.FoodId = newGuidFood;
 
                 // Kiểm tra hình ảnh có được đẩy lên
-                if(food.ImageFile != null)
+                if (food.ImageFile != null && (food.Image == null || food.Image == ""))
                 {
                     var fileResult = _fileService.SaveImage(foodCreateDto.ImageFile);
 
@@ -125,10 +139,18 @@ namespace CukCuk.WebFresher032023.BL.Service.Foods
                             sh.ServiceHobbyId = newGuidServiceHobby;
                             // Thêm vào mảng chứa toàn bộ id serviceHobby
                             serviceHobbyIds.Add(newGuidServiceHobby.ToString());
+                            if(sh.MoreMoney < 0 ) {
+                                validateErrors.Add("Trường thêm tiền phải là một số dương.");
+                            }
                             int qualityCreated = await _serviceHobby.CreateServiceHobby(sh);
-                            if(qualityCreated <= 0)
+                            if (qualityCreated <= 0)
                             {
                                 return;
+                            }
+
+                            if(validateErrors.Count > 0)
+                            {
+                                throw new ValidateException(validateErrors, ResourceVN.Validate_DevMessage);
                             }
 
                         }
@@ -141,11 +163,11 @@ namespace CukCuk.WebFresher032023.BL.Service.Foods
                 }
                 return 1;
             }
-            catch (Exception ex)
+            catch (ValidateException ex)
             {
-                throw;
+                throw ex;
+                //throw new InternalException(ex.Message);
             }
-            //}
         }
 
         /// <summary>
@@ -156,25 +178,16 @@ namespace CukCuk.WebFresher032023.BL.Service.Foods
         /// - Author: DDKhang (28/6/2023)
         public override async Task<int> UpdateAsync(FoodUpdateDto entityUpdateDto)
         {
-            Food food = _mapper.Map<Food>(entityUpdateDto);
-
-            // Kiểm tra hình ảnh có được đẩy lên
-            if (food.ImageFile != null)
+            try
             {
-                if((entityUpdateDto.Image?.Trim() == "" || entityUpdateDto.Image == null))
-                {
-                    // Cập nhật hình ảnh mới
-                    var fileResult = _fileService.SaveImage(entityUpdateDto.ImageFile);
+                await ValidateUpdate(entityUpdateDto);
 
-                    if (fileResult.Item1 == 1)
-                    {
-                        food.Image = fileResult.Item2; // getting name of image
-                    }
-                } else if (entityUpdateDto.Image?.Trim() != "" && entityUpdateDto.Image != null)
+                Food food = _mapper.Map<Food>(entityUpdateDto);
+
+                // Kiểm tra hình ảnh có được đẩy lên
+                if (food.ImageFile != null)
                 {
-                    // Xóa hình ảnh trong thư mục Uploads
-                    bool isDeleteImg = _fileService.DeleteImage(entityUpdateDto.Image);
-                    if(isDeleteImg)
+                    if ((entityUpdateDto.Image?.Trim() == "" || entityUpdateDto.Image == null))
                     {
                         // Cập nhật hình ảnh mới
                         var fileResult = _fileService.SaveImage(entityUpdateDto.ImageFile);
@@ -184,95 +197,115 @@ namespace CukCuk.WebFresher032023.BL.Service.Foods
                             food.Image = fileResult.Item2; // getting name of image
                         }
                     }
-                }
-            } else
-            {
-                if (entityUpdateDto.Image?.Trim() != "" && entityUpdateDto.Image != null)
-                {
-                    bool isDeleteImg = _fileService.DeleteImage(entityUpdateDto.Image);
-                    if (isDeleteImg)
+                    else if (entityUpdateDto.Image?.Trim() != "" && entityUpdateDto.Image != null)
                     {
-                        food.Image = "";
+                        // Xóa hình ảnh trong thư mục Uploads
+                        bool isDeleteImg = _fileService.DeleteImage(entityUpdateDto.Image);
+                        if (isDeleteImg)
+                        {
+                            // Cập nhật hình ảnh mới
+                            var fileResult = _fileService.SaveImage(entityUpdateDto.ImageFile);
+
+                            if (fileResult.Item1 == 1)
+                            {
+                                food.Image = fileResult.Item2; // getting name of image
+                            }
+                        }
                     }
                 }
-            }
-
-            // Cập nhật thông tin trên bảng Food
-            int qualityUpdate = await _foodRepository.UpdateAsync(food);
-
-            // Cập nhật thông tin trên bảng FoodServiceHobby (bảng chung)
-            Guid foodId = (Guid)food.FoodId;
-            // Kiểm foodId có tồn tại trong bảng chung gian
-            List<FoodServiceHobby> foods = await _foodServiceHobby.GetFoodServiceHobby(foodId.ToString());
-            if (foods.Count > 0)
-            {
-                await _foodServiceHobby.DeleteFoodServiceHobby(foodId.ToString());
-            }
-
-            // Kiểm tra hình ảnh có được cập nhật
-
-
-            // Nếu có giá trị của mảng servicesHobby truyền lên -> thực hiện thêm vào bảng chung gian
-            if (food.ServiceHobbes?.Count > 0)
-            {
-                // Danh sách chứa toàn bộ mảng id serviceHobby
-                List<string> serviceHobbyIds = new();
-
-                food.ServiceHobbes?.ForEach(async sh =>
+                else
                 {
-                    if (sh.ServiceHobbyId != Guid.Empty)
+                    if (entityUpdateDto.Image?.Trim() == "" && entityUpdateDto.Image == null)
                     {
-                        //// Kiểm tra giá trị các trường có sự thay đổi không
-                        //List<ServiceHobby> serviceHobbies = await _serviceHobby.GetAsyncServiceHobby(sh.ServiceHobbyId.ToString());
-                        //ServiceHobby serviceHobbyOld = serviceHobbies[0];
-
-                        //if (serviceHobbyOld.ServiceHobbyName != sh.ServiceHobbyName || serviceHobbyOld.MoreMoney != sh.MoreMoney)
-                        //{
-                        //    // --- Nếu có thay đổi
-                        //    // 1. Tạo mới serviceHobbyId
-                        //    Guid newGuidServiceHobby = Guid.NewGuid();
-
-                        //    // Xóa giá trị cũ
-                        //    await _serviceHobby.DeleteMutilEntityAsync(serviceHobbyOld.ServiceHobbyId.ToString());
-                        //    // 2. Cập nhật id mới
-                        //    sh.ServiceHobbyId = newGuidServiceHobby;
-
-                        //    // 3. Thêm vào mảng chứa toàn bộ id serviceHobby
-                        //    serviceHobbyIds.Add(newGuidServiceHobby.ToString());
-                        //    // Thêm mới giá trị cập nhật
-                        //    int test = await _serviceHobby.CreateServiceHobby(sh);
-                        //}
-                        //else
-                        //{
-                        //    // --- Nếu không có thay đổi
-                        //    // Kiểm tra xem đối tượng sở thích dịch vụ có chứa Id không -> chỉ lấy id đó
-                        //    serviceHobbyIds.Add(sh.ServiceHobbyId.ToString());
-                        //}
-
-                        serviceHobbyIds.Add(sh.ServiceHobbyId.ToString());
+                        bool isDeleteImg = _fileService.DeleteImage(entityUpdateDto.Image);
+                        if (isDeleteImg)
+                        {
+                            food.Image = "";
+                        }
                     }
-                    else
+                }
+
+                // Cập nhật thông tin trên bảng Food
+                int qualityUpdate = await _foodRepository.UpdateAsync(food);
+
+                // Cập nhật thông tin trên bảng FoodServiceHobby (bảng chung)
+                Guid foodId = (Guid)food.FoodId;
+                // Kiểm foodId có tồn tại trong bảng chung gian
+                List<FoodServiceHobby> foods = await _foodServiceHobby.GetFoodServiceHobby(foodId.ToString());
+                if (foods.Count > 0)
+                {
+                    await _foodServiceHobby.DeleteFoodServiceHobby(foodId.ToString());
+                }
+
+                // Kiểm tra hình ảnh có được cập nhật
+
+
+                // Nếu có giá trị của mảng servicesHobby truyền lên -> thực hiện thêm vào bảng chung gian
+                if (food.ServiceHobbes?.Count > 0)
+                {
+                    // Danh sách chứa toàn bộ mảng id serviceHobby
+                    List<string> serviceHobbyIds = new();
+
+                    food.ServiceHobbes?.ForEach(async sh =>
                     {
-                        // Thực hiện tạo serviceHobby mới
-                        // 1. Tạo mới serviceHobbyId
-                        Guid newGuidServiceHobby = Guid.NewGuid();
+                        if (sh.ServiceHobbyId != Guid.Empty)
+                        {
+                            //// Kiểm tra giá trị các trường có sự thay đổi không
+                            //List<ServiceHobby> serviceHobbies = await _serviceHobby.GetAsyncServiceHobby(sh.ServiceHobbyId.ToString());
+                            //ServiceHobby serviceHobbyOld = serviceHobbies[0];
 
-                        // 2. Cập nhật id mới
-                        sh.ServiceHobbyId = newGuidServiceHobby;
+                            //if (serviceHobbyOld.ServiceHobbyName != sh.ServiceHobbyName || serviceHobbyOld.MoreMoney != sh.MoreMoney)
+                            //{
+                            //    // --- Nếu có thay đổi
+                            //    // 1. Tạo mới serviceHobbyId
+                            //    Guid newGuidServiceHobby = Guid.NewGuid();
 
-                        // 3. Thêm vào mảng chứa toàn bộ id serviceHobby
-                        serviceHobbyIds.Add(newGuidServiceHobby.ToString());
-                        int test = await _serviceHobby.CreateServiceHobby(sh);
-                    }
-                });
+                            //    // Xóa giá trị cũ
+                            //    await _serviceHobby.DeleteMutilEntityAsync(serviceHobbyOld.ServiceHobbyId.ToString());
+                            //    // 2. Cập nhật id mới
+                            //    sh.ServiceHobbyId = newGuidServiceHobby;
 
-                // Chứa toàn bộ các id sở thích dịch vụ của food tương ứng
-                string serviceHobbesIds = string.Join(',', serviceHobbyIds);
-                // Thêm các id vào bảng chung
-                int qualityCreated = await _foodServiceHobbyRepository.CreateFoodServiceHobby(foodId.ToString(), serviceHobbesIds);
+                            //    // 3. Thêm vào mảng chứa toàn bộ id serviceHobby
+                            //    serviceHobbyIds.Add(newGuidServiceHobby.ToString());
+                            //    // Thêm mới giá trị cập nhật
+                            //    int test = await _serviceHobby.CreateServiceHobby(sh);
+                            //}
+                            //else
+                            //{
+                            //    // --- Nếu không có thay đổi
+                            //    // Kiểm tra xem đối tượng sở thích dịch vụ có chứa Id không -> chỉ lấy id đó
+                            //    serviceHobbyIds.Add(sh.ServiceHobbyId.ToString());
+                            //}
+
+                            serviceHobbyIds.Add(sh.ServiceHobbyId.ToString());
+                        }
+                        else
+                        {
+                            // Thực hiện tạo serviceHobby mới
+                            // 1. Tạo mới serviceHobbyId
+                            Guid newGuidServiceHobby = Guid.NewGuid();
+
+                            // 2. Cập nhật id mới
+                            sh.ServiceHobbyId = newGuidServiceHobby;
+
+                            // 3. Thêm vào mảng chứa toàn bộ id serviceHobby
+                            serviceHobbyIds.Add(newGuidServiceHobby.ToString());
+                            int test = await _serviceHobby.CreateServiceHobby(sh);
+                        }
+                    });
+
+                    // Chứa toàn bộ các id sở thích dịch vụ của food tương ứng
+                    string serviceHobbesIds = string.Join(',', serviceHobbyIds);
+                    // Thêm các id vào bảng chung
+                    int qualityCreated = await _foodServiceHobbyRepository.CreateFoodServiceHobby(foodId.ToString(), serviceHobbesIds);
+                }
+
+                return qualityUpdate;
             }
-
-            return qualityUpdate;
+            catch (ValidateException ex)
+            {
+                throw ex;
+            }
         }
 
         /// <summary>
@@ -289,7 +322,7 @@ namespace CukCuk.WebFresher032023.BL.Service.Foods
                 List<Food> foods = await _foodRepository.GetMultiAsync(listEntityId);
                 foods.ForEach(f =>
                 {
-                    if(f.Image != null && f.Image.Trim() != "")
+                    if (f.Image != null && f.Image.Trim() != "")
                     {
                         string imageName = f.Image;
                         bool isDeleteImg = _fileService.DeleteImage(imageName);
@@ -299,13 +332,179 @@ namespace CukCuk.WebFresher032023.BL.Service.Foods
                 // Xóa các bản ghi
                 int qualityDelete = await _foodRepository.DeleteMutilEntityAsync(listEntityId);
                 return qualityDelete;
-                
-            }
-            catch (Exception)
-            {
 
-                throw;
             }
+            catch (Exception ex)
+            {
+                throw new InternalException(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// - Thực hiện xác thực dữ liệu cho những trường khi thêm mới
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns>Task<bool></returns>
+        /// Author: DDKhang (10/6/2023)
+        public override async Task<bool> ValidateCreate(FoodCreateDto entity)
+        {
+            try
+            {
+                List<string> validateErrors = new List<string>();
+
+                // Kiểm tra null
+                if (entity == null)
+                {
+                    // Middleware
+                    throw new InternalException(ResourceVN.Validate_NotFoundAssests);
+                }
+
+                int qualityDupEmployeeCode = await IsDuplicateCode(entity.FoodCode);
+                // Thực hiện xác thực thông tin
+                // 1. Kiểm tra rỗng (các trường yêu cầu bắt buộc nhập)
+                // 1.1 Kiểm tra mã món ăn
+                if (string.IsNullOrEmpty(entity.FoodCode))
+                {
+                    validateErrors.Add(ResourceVN.Validate_FoodCodeRequired);
+                }
+                else if (qualityDupEmployeeCode >= 1)
+                {
+                    //validateErrors.Add(ResourceVN.Validate_DuplicateFoodCode);
+                    validateErrors.Add($"Mã <{entity.FoodCode}> đã tồn tại trên một trong các danh sách sau: Món ăn, đồ uống, combo, món khác, dịch vụ tính tiền theo thời gian.");
+                }
+
+                // 1.2 Kiểm tra tên món ăn
+                if (string.IsNullOrEmpty(entity.FoodName))
+                {
+                    validateErrors.Add(ResourceVN.Validate_FoodNameRequired);
+                }
+                else if (entity.FoodName.Length > 50)
+                {
+                    validateErrors.Add(ResourceVN.Validate_FullNameLengthMax + "cần nhỏ hơn " + 50 + "kí tự.");
+                }
+
+                // 1.3 Kiểm tra đơn vị tính
+                if (entity.FoodUnitId == Guid.Empty || string.IsNullOrEmpty(entity.FoodUnitId.ToString()))
+                {
+                    validateErrors.Add(ResourceVN.Validate_FoodUnitRequired);
+                }
+
+                // 1.4 Kiểm tra giá bán
+                if (string.IsNullOrEmpty(entity.Price.ToString()))
+                {
+                    validateErrors.Add(ResourceVN.Validate_FoodPriceRequired);
+                }
+                else if (entity.Price < 0)
+                {
+                    validateErrors.Add(ResourceVN.Validate_PricePositive);
+                }
+
+                if (validateErrors.Count > 0)
+                {
+                    string devMessage = ResourceVN.Validate_DevMessage;
+                    throw new ValidateException(validateErrors, devMessage);
+                }
+                return true;
+            }
+            catch (ValidateException ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// - Thực hiện xác thực thông itn cho những trường khi cập nhật
+        /// </summary>
+        /// <param name="entity">Thông tin thực thể</param>
+        /// <returns>Bool</returns>
+        /// <exception cref="InternalException"></exception>
+        /// Created By: DDKhang (24/6/2023)
+        public override async Task<bool> ValidateUpdate(FoodUpdateDto entity)
+        {
+            try
+            {
+                List<string> validateErrors = new List<string>();
+
+                // Kiểm tra null
+                if (entity == null)
+                {
+                    // Middleware
+                    throw new InternalException(ResourceVN.Validate_NotFoundAssests);
+                }
+
+                int qualityDupEmployeeCode = await IsDuplicateCode(entity.FoodCode);
+                // Thực hiện xác thực thông tin
+                // 1. Kiểm tra rỗng (các trường yêu cầu bắt buộc nhập)
+                // 1.1 Kiểm tra mã món ăn
+                if (string.IsNullOrEmpty(entity.FoodCode))
+                {
+                    validateErrors.Add(ResourceVN.Validate_FoodCodeRequired);
+                }
+                else if (qualityDupEmployeeCode > 1)
+                {
+                    validateErrors.Add(ResourceVN.Validate_DuplicateFoodCode);
+                }
+
+                // 1.2 Kiểm tra tên món ăn
+                if (string.IsNullOrEmpty(entity.FoodName))
+                {
+                    validateErrors.Add(ResourceVN.Validate_FoodNameRequired);
+                }
+                else if (entity.FoodName.Length > 50)
+                {
+                    validateErrors.Add(ResourceVN.Validate_FullNameLengthMax + "cần nhỏ hơn " + 50 + "kí tự.");
+                }
+
+                // 1.3 Kiểm tra đơn vị tính
+                if (entity.FoodUnitId == Guid.Empty || string.IsNullOrEmpty(entity.FoodUnitId.ToString()))
+                {
+                    validateErrors.Add(ResourceVN.Validate_FoodUnitRequired);
+                }
+
+                // 1.4 Kiểm tra giá bán
+                if (string.IsNullOrEmpty(entity.Price.ToString()))
+                {
+                    validateErrors.Add(ResourceVN.Validate_FoodPriceRequired);
+                }
+                else if (entity.Price < 0)
+                {
+                    validateErrors.Add(ResourceVN.Validate_PricePositive);
+                }
+
+                // 4. Kiểm tra mã món ăn có trùng khớp với món ăn hiện tại
+                if (entity.FoodId != Guid.Empty)
+                {
+                    List<Food> foods = await _foodRepository.GetAsync(entity.FoodId.ToString());
+                    Food food = foods[0];
+                    if (!food.FoodCode.Equals(entity.FoodCode))
+                    {
+                        validateErrors.Add(ResourceVN.Validate_DuplicateFoodCode);
+                    }
+                }
+
+                if (validateErrors.Count > 0)
+                {
+                    string devMessage = ResourceVN.Validate_DevMessage;
+                    throw new ValidateException(validateErrors, devMessage);
+                }
+                return true;
+            }
+            catch (ValidateException ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// - Kiểm tra trùng lặp mã
+        /// </summary>
+        /// <param name="code">Mã kiểm tra</param>
+        /// <returns>Task<bool></returns>
+        /// - Author: DDKhang (10/6/2023)
+        public async Task<int> IsDuplicateCode(string code)
+        {
+            int check = await _foodRepository.CheckDuplicateCode(code);
+            return check;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using CukCuk.WebFresher032023.DL.Entity;
+﻿using CukCuk.WebFresher032023.Common.ExceptionsError;
+using CukCuk.WebFresher032023.DL.Entity;
 using CukCuk.WebFresher032023.DL.Model;
 using CukCuk.WebFresher032023.DL.Repository.Bases;
 using Dapper;
@@ -228,6 +229,47 @@ namespace CukCuk.WebFresher032023.DL.Repository.Foods
         {
             List<Food> foods = await GetEntityById(ids);
             return foods;
+        }
+
+        public override async Task<int> CheckDuplicateCode(string entityCode)
+        {
+            try
+            {
+                // Khởi tạo kết nối với MariaDb
+                using var sqlConnection = await GetOpenConnectionAsync();
+
+                // === Cách 2: Gọi Stored Procedure ===
+                // 1. Khởi tạo lệnh sql gọi đến Stored Procedure
+                string sqlCommandProc = $"Proc_CheckDuplicateFoodCode";
+
+                //// 2. Thực hiện thêm tham số cho proc
+                //MySqlCommand command = new MySqlCommand(sqlCommandProc, (MySqlConnection?)sqlConnection);
+                //command.CommandType = CommandType.StoredProcedure;
+                //command.Parameters.AddWithValue($"@m_FoodCode", entityCode);
+
+                //// 3. Thực thi proc
+                //Food food = await command.ExecuteNonQuery();
+
+                var parameters = new DynamicParameters();
+                parameters.Add($"@m_FoodCode", entityCode); // foodId là mã món ăn bạn muốn truyền vào stored procedure
+
+                List<Food> foods = (List<Food>)await sqlConnection.QueryAsync<Food>(sqlCommandProc, parameters,
+                    commandType: CommandType.StoredProcedure);
+
+                // Đóng kết nối sql
+                await sqlConnection.CloseAsync();
+
+                return foods.Count();
+                //if (food != null)
+                //{
+                //    return true;
+                //};
+                //return false;
+            }
+            catch (Exception ex)
+            {
+                throw new InternalException(ex.Message);
+            }
         }
     }
 }

@@ -73,6 +73,8 @@ namespace CukCuk.WebFresher032023.DL.Funtions
                         return $"{property} NOT LIKE '%{stringValue}%'";
                     case "=":
                         return $"{property} = '{stringValue}'";
+                    case "IN":
+                        return $"{property} IN {stringValue}";
                     default:
                         throw new ArgumentException("Invalid operator for string type");
                 }
@@ -125,7 +127,8 @@ namespace CukCuk.WebFresher032023.DL.Funtions
 
                 case "NOTLIKE":
                     return "NOTLIKE";
-
+                case "IN":
+                    return "IN";
                 default:
                     throw new ArgumentException("Invalid operator");
             }

@@ -1,4 +1,5 @@
-﻿using CukCuk.WebFresher032023.DL.Entity;
+﻿using CukCuk.WebFresher032023.Common.ExceptionsError;
+using CukCuk.WebFresher032023.DL.Entity;
 using CukCuk.WebFresher032023.DL.Funtions;
 using CukCuk.WebFresher032023.DL.Model;
 using Dapper;
@@ -62,8 +63,7 @@ namespace CukCuk.WebFresher032023.DL.Repository.Bases
             }
             catch (Exception ex)
             {
-                throw;
-                //throw new InternalException(ex.Message);
+                throw new InternalException(ex.Message);
             }
         }
 
@@ -140,8 +140,8 @@ namespace CukCuk.WebFresher032023.DL.Repository.Bases
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception(ex.Message);
                     scope.Dispose();
+                    throw new InternalException(ex.Message);
                 }
             }
         }
@@ -168,7 +168,7 @@ namespace CukCuk.WebFresher032023.DL.Repository.Bases
         {
             try
             {
-                int page, limit=1, skip = 0;
+                int page, limit = 1, skip = 0;
 
                 // Thực hiện xử lí pagination
                 if (entityFilter.Page == null)
@@ -199,6 +199,24 @@ namespace CukCuk.WebFresher032023.DL.Repository.Bases
 
                 // Tạo câu lệnh sql
                 string sqlQuery = ConvertQuery.BuildSqlQuery(entityFilter.Filters);
+
+                string sqlQuerySort = "";
+                if(entityFilter.Sorts != null && entityFilter.Sorts.Count > 0)
+                {
+                    List<string> textSorts = new();
+                    entityFilter.Sorts.ForEach(ef =>
+                    {
+                        if(ef.Direction?.Trim() != "")
+                        {
+                        string sqlQuerySort = "";
+                        sqlQuerySort = $"{ef.Property} {ef.Direction}";
+                        textSorts.Add(sqlQuerySort);
+                        }
+                    });
+
+                    sqlQuerySort = string.Join(", ", textSorts);
+                }
+
                 // Thực hiện truy vấn
                 // List<TEntity> foods = (List<TEntity>)sqlConnection.Query<TEntity>(sqlQuery);
 
@@ -206,6 +224,13 @@ namespace CukCuk.WebFresher032023.DL.Repository.Bases
                 {
                     sqlQuery = "true";
                 }
+
+                // Kiểm tra có giá trị truy vấn sắp xếp
+                if(sqlQuerySort.Trim() != "")
+                {
+                    sqlQuerySort = $"ORDER BY {sqlQuerySort}";
+                }
+
                 // Kết nối StoredProcedure - Thực hiện lọc 
                 string sqlCommandProcFilter = "Proc_Filter" + tableName;
 
@@ -215,6 +240,7 @@ namespace CukCuk.WebFresher032023.DL.Repository.Bases
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     // Thêm các tham số vào stored procedure (nếu có)
                     command.Parameters.AddWithValue($"@{tableName.ToLower()}FilterQuery", sqlQuery);
+                    command.Parameters.AddWithValue($"@{tableName.ToLower()}SortQuery", sqlQuerySort);
                     command.Parameters.AddWithValue("@limitFilter", entityFilter.Limit == null ? null : entityFilter.Limit);
                     command.Parameters.AddWithValue("@skip", skip);
 
@@ -224,11 +250,12 @@ namespace CukCuk.WebFresher032023.DL.Repository.Bases
                     while (reader.Read())
                     {
                         totalEntities = (int)(Int64)reader.GetValue(0);
-                        if (entityFilter.Limit==null)
+                        if (entityFilter.Limit == null)
                         {
                             // Nếu limit = null or < 0 thì limit sẽ là toàn bộ giá trị trong bảng
                             limit = totalEntities;
-                        } else
+                        }
+                        else
                         {
                             limit = (int)entityFilter.Limit;
                         }
@@ -300,12 +327,10 @@ namespace CukCuk.WebFresher032023.DL.Repository.Bases
                 await sqlConnection.CloseAsync();
                 return entityFilterResult;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                throw new InternalException(ex.Message);
             }
-
         }
 
         /// <summary>
@@ -389,8 +414,59 @@ namespace CukCuk.WebFresher032023.DL.Repository.Bases
             }
             catch (Exception ex)
             {
-                throw;
-                //throw new InternalException(ex.Message);
+                throw new InternalException(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// - Thực hiện tạo mã mới cho entity
+        /// </summary>
+        /// <returns>String</returns>
+        /// <exception cref="InternalException"></exception>
+        /// Created By: DDKhang (24/5/2023)
+        public virtual async Task<string> NewEntityCode(string prefixEntity)
+        {
+            try
+            {
+                // Lấy tên của thực thể
+                string tableName = typeof(TEntity).Name;
+                // Khởi tạo kết nối với MariaDb
+                using var sqlConnection = await GetOpenConnectionAsync();
+
+                string sqlCommandProc = "Proc_New" + tableName + "Code";
+                MySqlCommand command = new MySqlCommand(sqlCommandProc, (MySqlConnection?)sqlConnection);
+                command.CommandType = CommandType.StoredProcedure;
+
+                // Add the output parameter
+
+                //command.Parameters.Add(new MySqlParameter("@prefix", MySqlDbType.VarChar, 255));
+                //command.Parameters["@prefix"].Direction = ParameterDirection.Input;
+                //command.Parameters.Add(new MySqlParameter("@newCode", MySqlDbType.VarChar, 255));
+                //command.Parameters["@newCode"].Direction = ParameterDirection.Output;
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@prefix", prefixEntity);
+                parameters.Add("@newCode", dbType: DbType.String, direction: ParameterDirection.Output);
+
+                //// Thực thi stored Procedure
+                //command.ExecuteNonQuery();
+
+
+                // Gọi stored procedure và lấy kết quả
+                sqlConnection.Execute(sqlCommandProc, parameters, commandType: CommandType.StoredProcedure);
+
+                //string newEntityCode = command.Parameters["@newCode"].Value?.ToString() ?? "";
+
+                // Lấy giá trị từ tham số đầu ra
+                string newEntityCode = parameters.Get<string>("@newCode");
+
+                // Đóng kết nối db
+                await sqlConnection.CloseAsync();
+                return newEntityCode;
+            }
+            catch (Exception ex)
+            {
+                throw new InternalException(ex.Message);
             }
         }
 
@@ -417,6 +493,7 @@ namespace CukCuk.WebFresher032023.DL.Repository.Bases
 
                     // Kết nối database
                     using var sqlConnection = await GetOpenConnectionAsync();
+                    //var transaction = sqlConnection.BeginTransaction();
                     //using var mySqlConnection = new MySqlConnection(sqlConnection);
                     //mySqlConnection.Open();
 
@@ -459,10 +536,8 @@ namespace CukCuk.WebFresher032023.DL.Repository.Bases
                 }
                 catch (Exception ex)
                 {
-                    //throw new InternalException(ex.Message);
-                    throw new Exception();
-                    // Rollback Trasaction
                     scope.Dispose();
+                    throw new InternalException(ex.Message);
                 }
             }
         }
@@ -518,13 +593,18 @@ namespace CukCuk.WebFresher032023.DL.Repository.Bases
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception(ex.Message);
-                    // Rollback Transaction
-                    scope.Dispose();
+                    throw new InternalException(ex.Message);
                 }
             }
         }
 
+        /// <summary>
+        /// - Thực hiện xóa nhiều bản ghi theo mã thực thể
+        /// </summary>
+        /// <param name="listEntityId">Danh sách mã thực thể</param>
+        /// <returns>Số lượng đã xóa</returns>
+        /// <exception cref="InternalException"></exception>
+        /// Created By: DDKhang (24/6/2023)
         public async Task<int> DeleteMultiEntity(string listEntityId)
         {
             using (TransactionScope scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
@@ -557,16 +637,25 @@ namespace CukCuk.WebFresher032023.DL.Repository.Bases
                 }
                 catch (Exception ex)
                 {
-                    //throw new InternalException(ex.Message);
-                    throw new Exception(ex.Message);
-                    // Rollback Transaction
                     scope.Dispose();
+                    throw new InternalException(ex.Message);
                 }
                 finally
                 {
 
                 }
             }
+        }
+
+        /// <summary>
+        /// - Thực hiện kiểm tra mã trùng lặp
+        /// </summary>
+        /// <param name="entityCode">Mã thực thể</param>
+        /// <returns>Bool</returns>
+        /// Created By: DDKhang (24/6/2023)
+        public virtual async Task<int> CheckDuplicateCode(string entityCode)
+        {
+            return 0;
         }
     }
 }

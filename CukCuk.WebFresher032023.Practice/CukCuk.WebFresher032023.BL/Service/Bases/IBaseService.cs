@@ -57,5 +57,12 @@ namespace CukCuk.WebFresher032023.BL.Service.Bases
         /// <returns>Số bản ghi được xóa</returns>
         /// CreatedBy: DDKhang (27/6/2023)
         Task<int> DeleteMutilEntityAsync(string listEntityId);
+
+        /// <summary>
+        /// - Thực hiện tạo mã mới cho thực thể
+        /// </summary>
+        /// <param name="prefixEntity">Tiền tố thực thể</param>
+        /// <returns>Mã thực thể mới</returns>
+        Task<string> NewEntityCode(string prefixEntity);
     }
 }

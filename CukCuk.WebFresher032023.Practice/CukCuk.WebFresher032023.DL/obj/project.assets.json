@@ -491,6 +491,16 @@
             "rid": "win"
           }
         }
+      },
+      "CukCuk.WebFresher032023.Common/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "compile": {
+          "bin/placeholder/CukCuk.WebFresher032023.Common.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/CukCuk.WebFresher032023.Common.dll": {}
+        }
       }
     }
   },
@@ -1799,10 +1809,16 @@
         "useSharedDesignerContext.txt",
         "version.txt"
       ]
+    },
+    "CukCuk.WebFresher032023.Common/1.0.0": {
+      "type": "project",
+      "path": "../CukCuk.WebFresher032023.Common/CukCuk.WebFresher032023.Common.csproj",
+      "msbuildProject": "../CukCuk.WebFresher032023.Common/CukCuk.WebFresher032023.Common.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net6.0": [
+      "CukCuk.WebFresher032023.Common >= 1.0.0",
       "Dapper >= 2.0.143",
       "Microsoft.AspNetCore.Http.Features >= 5.0.17",
       "Microsoft.Extensions.Configuration.Abstractions >= 7.0.0",
@@ -1836,7 +1852,11 @@
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "D:\\Work\\Misa\\GĐ2\\CukCuk\\Product\\BackEnd\\CukCuk.WebFresher032023.Practice\\CukCuk.WebFresher032023.Common\\CukCuk.WebFresher032023.Common.csproj": {
+              "projectPath": "D:\\Work\\Misa\\GĐ2\\CukCuk\\Product\\BackEnd\\CukCuk.WebFresher032023.Practice\\CukCuk.WebFresher032023.Common\\CukCuk.WebFresher032023.Common.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

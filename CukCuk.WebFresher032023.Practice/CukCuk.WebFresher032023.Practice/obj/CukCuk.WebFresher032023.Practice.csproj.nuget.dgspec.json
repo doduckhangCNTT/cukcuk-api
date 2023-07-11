@@ -149,7 +149,11 @@
         "frameworks": {
           "net6.0": {
             "targetAlias": "net6.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "D:\\Work\\Misa\\GĐ2\\CukCuk\\Product\\BackEnd\\CukCuk.WebFresher032023.Practice\\CukCuk.WebFresher032023.Common\\CukCuk.WebFresher032023.Common.csproj": {
+                "projectPath": "D:\\Work\\Misa\\GĐ2\\CukCuk\\Product\\BackEnd\\CukCuk.WebFresher032023.Practice\\CukCuk.WebFresher032023.Common\\CukCuk.WebFresher032023.Common.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
